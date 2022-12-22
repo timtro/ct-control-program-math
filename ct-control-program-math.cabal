@@ -46,6 +46,7 @@ executable ct-control-program-math
         base ^>=4.15.1.0,
         ct-control-program-math,
         data-fix
+        -- recursion-schemes -- Kmett's library.
 
     hs-source-dirs:   app
     default-language: Haskell2010
