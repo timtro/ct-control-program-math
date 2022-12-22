@@ -1,9 +1,9 @@
-{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE InstanceSigs  #-}
 {-# LANGUAGE UnicodeSyntax #-}
 
 module PrAlgebra where
 
-import Data.Fix ( foldFix, Fix(Fix), unFix )
+import           Data.Fix (Fix (Fix), foldFix, unFix)
 
 (▽) :: (a → c) → (b → c) → Either a b → c
 (▽) = either
@@ -15,7 +15,7 @@ newtype 𝘗ᵣ hd tl = Pᵣ (Maybe (tl, hd))
 
 instance Functor (𝘗ᵣ hd) where
   fmap :: (a → b) → 𝘗ᵣ hd a → 𝘗ᵣ hd b
-  fmap f (Pᵣ Nothing) = Pᵣ Nothing
+  fmap f (Pᵣ Nothing)         = Pᵣ Nothing
   fmap f (Pᵣ (Just (tl, hd))) = Pᵣ (Just (f tl, hd))
 
 type 𝘗ᵣAlgebra state value =  𝘗ᵣ value state → state
@@ -49,19 +49,19 @@ snocToList = foldFix alg
   where
     -- alg :: 𝘗ᵣ hd [hd] → [hd]
     alg :: 𝘗ᵣAlgebra [hd] hd
-    alg (Pᵣ Nothing) = []
+    alg (Pᵣ Nothing)             = []
     alg (Pᵣ (Just (accum, val))) = accum ++ [val]
 
 snocLen :: Snoc hd → Int
 snocLen = foldFix alg
   where
     alg ::  𝘗ᵣAlgebra Int a
-    alg (Pᵣ Nothing) = 0
+    alg (Pᵣ Nothing)             = 0
     alg (Pᵣ (Just (counter, _))) = counter + 1
 
 snocString :: (Show hd) ⇒ Snoc hd → String
 snocString = foldFix alg
   where
     alg :: (Show hd) ⇒ 𝘗ᵣAlgebra String hd
-    alg (Pᵣ Nothing) = "()"
+    alg (Pᵣ Nothing)       = "()"
     alg (Pᵣ (Just (s, i))) = s ++ " ++ " ++ show i
