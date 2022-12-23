@@ -5,11 +5,11 @@ module PrAlgebra where
 
 import           Data.Fix (Fix (Fix), foldFix, unFix)
 
-(▽) :: (a → c) → (b → c) → Either a b → c
-(▽) = either
+type GlobalElement a = () → a
 
-(△) :: (b → c) → (b → c') → b → (c, c')
-(△) f g x = (f x, g x)
+makeGlobal :: a → GlobalElement a
+makeGlobal = const
+-- makeGlobal val = \_ -> val
 
 newtype 𝘗ᵣ hd tl = Pᵣ (Maybe (tl, hd))
 
@@ -19,6 +19,13 @@ instance Functor (𝘗ᵣ hd) where
   fmap f (Pᵣ (Just (tl, hd))) = Pᵣ (Just (f tl, hd))
 
 type 𝘗ᵣAlgebra state value =  𝘗ᵣ value state → state
+
+(ge ▽ f) x = case x of
+  (Pᵣ Nothing)         -> ge()
+  (Pᵣ (Just (tl, hd))) -> f (tl, hd)
+
+(△) :: (b → c) → (b → c') → b → (c, c')
+(△) f g x = (f x, g x)
 
 type Snoc hd = Fix(𝘗ᵣ hd)
 
@@ -51,6 +58,9 @@ snocToList = foldFix alg
     alg :: 𝘗ᵣAlgebra [hd] hd
     alg (Pᵣ Nothing)             = []
     alg (Pᵣ (Just (accum, val))) = accum ++ [val]
+
+listToSnoc :: [a] → Snoc a
+listToSnoc = foldl snoc nil
 
 snocLen :: Snoc hd → Int
 snocLen = foldFix alg
