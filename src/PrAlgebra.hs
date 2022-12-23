@@ -1,9 +1,12 @@
 {-# LANGUAGE InstanceSigs  #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE UnicodeSyntax #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module PrAlgebra where
 
 import           Data.Fix (Fix (Fix), foldFix, unFix)
+import           Data.Functor.Classes
 
 type GlobalElement a = () → a
 
@@ -17,6 +20,10 @@ instance Functor (𝘗ᵣ hd) where
   fmap :: (a → b) → 𝘗ᵣ hd a → 𝘗ᵣ hd b
   fmap f (Pᵣ Nothing)         = Pᵣ Nothing
   fmap f (Pᵣ (Just (tl, hd))) = Pᵣ (Just (f tl, hd))
+
+instance (Show hd) ⇒ Show1 (𝘗ᵣ hd) where
+  liftShowsPrec _ _ _ (Pᵣ Nothing) = showString "()"
+  liftShowsPrec sp _ d (Pᵣ (Just (t, h))) = showsUnaryWith sp (show h) d t
 
 type 𝘗ᵣAlgebra state value =  𝘗ᵣ value state → state
 

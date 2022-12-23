@@ -29,7 +29,9 @@ library
     -- other-extensions:
     build-depends:
         base ^>=4.15.1.0,
-        data-fix
+        data-fix,
+        -- deriving-compat, -- Template haskell for deriving Show1. Con't figure out how to use it.
+        -- recursion-schemes -- Kmett's library.
 
     hs-source-dirs:   src
     default-language: Haskell2010
@@ -46,7 +48,6 @@ executable ct-control-program-math
         base ^>=4.15.1.0,
         ct-control-program-math,
         data-fix
-        -- recursion-schemes -- Kmett's library.
 
     hs-source-dirs:   app
     default-language: Haskell2010

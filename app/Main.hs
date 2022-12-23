@@ -21,6 +21,7 @@ algSum = gSZero ▽ f
 
 main :: IO ()
 main = do
-  -- print $ snocHead . scanFix algSum . listToSnoc $ [0..100000000]
-  print $ snocToList $ scanFix algSum is
+--   -- print $ snocHead . scanFix algSum . listToSnoc $ [0..1000]
+  print $ scanFix algSum is
+
 -- main = interact $ snocString . scanFix algSum . listToSnoc .  map read . words
