@@ -10,13 +10,17 @@ type O = Int
 is :: Snoc I
 is = nil ⧺ 0 ⧺ 1 ⧺ 2 ⧺ 3 ⧺ 4
 
-algSum :: 𝘗ᵣAlgebra Int Int
-algSum (Pᵣ Nothing) = 0
-algSum (Pᵣ (Just (s, i))) = f s i
+gSZero :: GlobalElement S
+gSZero = makeGlobal 0
+
+algSum :: 𝘗ᵣ I S -> S
+algSum = gSZero ▽ f
   where
-    f :: S -> I -> S
-    f s i = s + i
+    f :: (S, I) -> S
+    f (s, i) = s + i
 
 main :: IO ()
 main = do
+  -- print $ snocHead . scanFix algSum . listToSnoc $ [0..100000000]
   print $ snocToList $ scanFix algSum is
+-- main = interact $ snocString . scanFix algSum . listToSnoc .  map read . words
