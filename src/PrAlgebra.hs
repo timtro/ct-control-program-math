@@ -7,13 +7,10 @@ module PrAlgebra where
 
 import           Data.Fix (Fix (Fix), foldFix, unFix)
 import           Data.Functor.Classes
+import           BiCCC (GlobalElement)
 
-type GlobalElement a = () → a
-
-makeGlobal :: a → GlobalElement a
-makeGlobal = const
--- makeGlobal val = \_ -> val
-
+-- Really awkward flipping of types because the partially applied
+--   (𝘗ᵣ hd) must be used as funcor and Fix.
 newtype 𝘗ᵣ hd tl = Pᵣ (Maybe (tl, hd))
 
 instance Functor (𝘗ᵣ hd) where
@@ -27,12 +24,8 @@ instance (Show hd) ⇒ Show1 (𝘗ᵣ hd) where
 
 type 𝘗ᵣAlgebra state value =  𝘗ᵣ value state → state
 
-(ge ▽ f) x = case x of
-  (Pᵣ Nothing)         -> ge()
-  (Pᵣ (Just (tl, hd))) -> f (tl, hd)
-
-(△) :: (b → c) → (b → c') → b → (c, c')
-(△) f g x = (f x, g x)
+eitherToMaybe :: Either a b -> Maybe b
+eitherToMaybe = either (const Nothing) Just
 
 type Snoc hd = Fix(𝘗ᵣ hd)
 
